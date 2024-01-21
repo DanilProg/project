@@ -1,4 +1,11 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  FormEvent,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Product } from "./Product.tsx";
 import classes from "./Product.module.css";
 import { Modal } from "../Modal/Modal.tsx";
@@ -40,7 +47,6 @@ const typeFilterProduct = (products: IProduct[], value: string) => {
 };
 const descFilterProduct = (products: IProduct[], valueDesc: string) => {
   if (!valueDesc) return products;
-
   return products.filter((product) =>
     product.description.toLowerCase().includes(valueDesc.toLowerCase()),
   );
@@ -48,8 +54,8 @@ const descFilterProduct = (products: IProduct[], valueDesc: string) => {
 const compare = (a: string, b: string) => (+a < +b ? 1 : -1);
 
 const sortProducts = (products: IProduct[], category: "asc" | "desc") => {
+  console.log(category);
   if (!category) return products;
-
   return products.sort((a, b) => {
     return category === "desc"
       ? compare(a.price, b.price)
@@ -61,7 +67,11 @@ const paginationProductList = (
   startPoint: number,
   endPoint: number,
 ) => {
-  console.log(startPoint, endPoint);
+  window.scroll({
+    left: 0,
+    top: 0,
+    behavior: "smooth",
+  });
   return productsParams.slice(startPoint, endPoint);
 };
 export const ProductList = ({
@@ -75,6 +85,7 @@ export const ProductList = ({
   category,
 }: ProductList) => {
   const [pagination, setPagination] = useState({ startPoint: 0, endPoint: 5 });
+  const productItemRef = useRef<HTMLDivElement>(null);
   const sortAndFilterProducts = useMemo(() => {
     const searchProduct = handleSearchProduct(products, search);
     const typeFilter = typeFilterProduct(
@@ -84,15 +95,32 @@ export const ProductList = ({
     const descTypeFilter = descFilterProduct(typeFilter, valueDesc);
     return sortProducts(descTypeFilter, category);
   }, [products, search, valueSelect?.value, valueDesc, category]);
-  const paginationProduct = useMemo(() => {
-    console.log(sortAndFilterProducts);
+
+  const paginationProduct = () => {
     return paginationProductList(
       sortAndFilterProducts,
       pagination.startPoint,
       pagination.endPoint,
     );
-  }, [pagination.endPoint, pagination.startPoint, sortAndFilterProducts]);
-  console.log(paginationProduct);
+  };
+
+  /*  useEffect(() => {
+    const getPosition = () => {
+      if (productItemRef.current) {
+        const productItem = productItemRef.current.getBoundingClientRect();
+        console.log(productItem);
+      }
+      if (sortAndFilterProducts) {
+        window.addEventListener("resize", getPosition);
+        window.addEventListener("scroll", getPosition);
+      }
+      return () => {
+        window.removeEventListener("resize", getPosition);
+        window.removeEventListener("scroll", getPosition);
+      };
+    };
+    getPosition();
+  }, [sortAndFilterProducts]);*/
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (selectedValue?.id) {
@@ -122,9 +150,11 @@ export const ProductList = ({
   return (
     <div className={classes.productList}>
       <div className={classes.productContent}>
-        {paginationProduct.map((product) => (
+        {paginationProduct().map((product, index) => (
           <Product
             key={product.title}
+            indexElement={index}
+            productItemRef={productItemRef}
             value={product}
             onEdit={() => setSelectedValue(product)}
           />

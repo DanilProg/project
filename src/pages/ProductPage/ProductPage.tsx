@@ -156,12 +156,7 @@ export const ProductPage = () => {
         >
           <Button variant={"outline"}>Открыть фильтры</Button>
         </Popup>
-        <Popup
-          placement={"right"}
-          onContent={<Category category={category} setCategory={setCategory} />}
-        >
-          <Button variant={"outline"}>Категории</Button>
-        </Popup>
+        <Category category={category} setCategory={setCategory} />
       </div>
       <ProductList
         valueSelect={valueSelect}

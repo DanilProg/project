@@ -122,6 +122,8 @@ export const ProductPage = () => {
   });
   const [valueDesc, setValueDesc] = useState("");
   const [category, setCategory] = useState<"asc" | "desc">("asc");
+  const [pageSize, setPageSize] = useState(5);
+  const [page, setPage] = useState(0);
   return (
     <div className={"container"}>
       <div className={classes.header}>
@@ -151,6 +153,7 @@ export const ProductPage = () => {
               setValueSelect={setValueSelect}
               valueSelect={valueSelect}
               setValueDesc={setValueDesc}
+              setPage={setPage}
             />
           }
         >
@@ -159,6 +162,10 @@ export const ProductPage = () => {
         <Category category={category} setCategory={setCategory} />
       </div>
       <ProductList
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        page={page}
+        setPage={setPage}
         valueSelect={valueSelect}
         category={category}
         valueDesc={valueDesc}

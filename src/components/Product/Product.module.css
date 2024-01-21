@@ -16,6 +16,11 @@
     display: flex;
     justify-content: center;
 }
+.paginationPageSize{
+    display: flex;
+    align-items: center;
+    height: 100px;
+}
 .paginationButton{
     border: 1px solid black;
     display: flex;

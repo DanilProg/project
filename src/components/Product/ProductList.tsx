@@ -30,6 +30,10 @@ interface ProductList {
   valueSelect?: IOption;
   valueDesc: string;
   category: "asc" | "desc";
+  pageSize: number;
+  setPageSize: (value: number) => void;
+  page: number;
+  setPage: (value: number) => void;
 }
 const handleSearchProduct = (products: IProduct[], search: string) => {
   if (!search) return products;
@@ -40,7 +44,6 @@ const handleSearchProduct = (products: IProduct[], search: string) => {
 
 const typeFilterProduct = (products: IProduct[], value: string) => {
   if (!value) return products;
-
   return products.filter((product) => {
     return product.type?.value === value;
   });
@@ -54,25 +57,12 @@ const descFilterProduct = (products: IProduct[], valueDesc: string) => {
 const compare = (a: string, b: string) => (+a < +b ? 1 : -1);
 
 const sortProducts = (products: IProduct[], category: "asc" | "desc") => {
-  console.log(category);
   if (!category) return products;
   return products.sort((a, b) => {
     return category === "desc"
       ? compare(a.price, b.price)
       : compare(b.price, a.price);
   });
-};
-const paginationProductList = (
-  productsParams: IProduct[],
-  startPoint: number,
-  endPoint: number,
-) => {
-  window.scroll({
-    left: 0,
-    top: 0,
-    behavior: "smooth",
-  });
-  return productsParams.slice(startPoint, endPoint);
 };
 export const ProductList = ({
   setProducts,
@@ -83,8 +73,11 @@ export const ProductList = ({
   valueDesc,
   valueSelect,
   category,
+  pageSize,
+  setPageSize,
+  page,
+  setPage,
 }: ProductList) => {
-  const [pagination, setPagination] = useState({ startPoint: 0, endPoint: 5 });
   const productItemRef = useRef<HTMLDivElement>(null);
   const sortAndFilterProducts = useMemo(() => {
     const searchProduct = handleSearchProduct(products, search);
@@ -96,31 +89,6 @@ export const ProductList = ({
     return sortProducts(descTypeFilter, category);
   }, [products, search, valueSelect?.value, valueDesc, category]);
 
-  const paginationProduct = () => {
-    return paginationProductList(
-      sortAndFilterProducts,
-      pagination.startPoint,
-      pagination.endPoint,
-    );
-  };
-
-  /*  useEffect(() => {
-    const getPosition = () => {
-      if (productItemRef.current) {
-        const productItem = productItemRef.current.getBoundingClientRect();
-        console.log(productItem);
-      }
-      if (sortAndFilterProducts) {
-        window.addEventListener("resize", getPosition);
-        window.addEventListener("scroll", getPosition);
-      }
-      return () => {
-        window.removeEventListener("resize", getPosition);
-        window.removeEventListener("scroll", getPosition);
-      };
-    };
-    getPosition();
-  }, [sortAndFilterProducts]);*/
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (selectedValue?.id) {
@@ -150,17 +118,19 @@ export const ProductList = ({
   return (
     <div className={classes.productList}>
       <div className={classes.productContent}>
-        {paginationProduct().map((product, index) => (
-          <Product
-            key={product.title}
-            indexElement={index}
-            productItemRef={productItemRef}
-            value={product}
-            onEdit={() => setSelectedValue(product)}
-          />
-        ))}
+        {sortAndFilterProducts
+          .slice(page * pageSize, (page + 1) * pageSize)
+          .map((product, index) => (
+            <Product
+              key={product.title}
+              indexElement={index}
+              productItemRef={productItemRef}
+              value={product}
+              onEdit={() => setSelectedValue(product)}
+            />
+          ))}
         <div className={classes.paginationContainer}>
-          {new Array(Math.ceil(sortAndFilterProducts.length / 5))
+          {new Array(Math.ceil(sortAndFilterProducts.length / pageSize))
             .fill("")
             .map((btn, index) => (
               <button
@@ -169,17 +139,26 @@ export const ProductList = ({
                   classes.paginationButtonFocus,
                 )}
                 key={index}
-                onClick={() =>
-                  setPagination({
-                    ...pagination,
-                    startPoint: index === 0 ? 0 : index * 5,
-                    endPoint: index === 0 ? 5 : index * 5 + 5,
-                  })
-                }
+                onClick={() => setPage(index)}
               >
                 {index + 1}
               </button>
             ))}
+        </div>
+        <div className={classes.paginationPageSize}>
+          <p>Колличество</p>
+          {[5, 10, 15].map((btn) => (
+            <button
+              key={btn}
+              className={classes.paginationButton}
+              onClick={() => {
+                setPageSize(btn);
+                setPage(0);
+              }}
+            >
+              {btn}
+            </button>
+          ))}
         </div>
         {selectedValue && (
           <Modal

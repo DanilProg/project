@@ -7,16 +7,21 @@ interface Filter {
   valueSelect?: IOption;
   setValueSelect: (value: IOption) => void;
   setValueDesc: (value: string) => void;
+  setPage: (value: number) => void;
 }
 export const Filter = ({
   setValueSelect,
   valueSelect,
+  setPage,
   setValueDesc,
 }: Filter) => {
   return (
     <div className={classes.filter}>
       <Select
-        onChange={setValueSelect}
+        onChange={(e) => {
+          setValueSelect(e);
+          setPage(0);
+        }}
         value={valueSelect}
         className={classes.filterSelect}
         options={typeProduct}
@@ -24,7 +29,10 @@ export const Filter = ({
       <Input
         variant={"outline"}
         label={"По описанию"}
-        onChange={(e) => setValueDesc(e.target.value)}
+        onChange={(e) => {
+          setValueDesc(e.target.value);
+          setPage(0);
+        }}
       />
     </div>
   );

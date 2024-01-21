@@ -1,0 +1,27 @@
+.checkbox__field {
+  display: flex;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+}
+.label {
+}
+.check__input {
+}
+.checkbox {
+  cursor: pointer;
+  position: absolute;
+  width: 1em;
+  margin-left: -1.7em;
+  height: 1em;
+  background-color: inherit;
+  border: 3px solid var(--primary-color);
+  transition: 0.4s;
+}
+
+.check__input:checked + .checkbox {
+  background-color: var(--primary-color);
+}
+.check__input:focus + .checkbox {
+  box-shadow: 0px 0px 8px 1px var(--primary-color);
+}

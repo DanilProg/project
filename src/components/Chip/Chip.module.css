@@ -1,0 +1,32 @@
+.chip {
+  user-select: none;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  max-width: max-content;
+}
+.primary {
+  color: #e8e8e8;
+  background: var(--primary-color);
+}
+.outline {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  background: inherit;
+}
+.outline:hover {
+  background: var(--primary-color);
+  color: #e8e8e8;
+}
+.ghost {
+  padding: unset;
+  border: none;
+  transition: none;
+}
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:active {
+}

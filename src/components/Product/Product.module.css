@@ -1,0 +1,75 @@
+.header{
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+.productContent{
+    display: grid;
+}
+.title{
+    font-weight: 400;
+}
+.text{
+    margin-bottom: 12px;
+}
+.paginationContainer{
+    display: flex;
+    justify-content: center;
+}
+.paginationButton{
+    border: 1px solid black;
+    display: flex;
+    width: 44px;
+    height: 36px;
+    align-items: center;
+    color: white;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0 15px ;
+    background-color: var(--primary-color);
+}
+.paginationButton:hover{
+    background-color: #6da6ff;
+}
+.paginationButton:focus{
+    border: 1px solid white;
+    box-shadow: 0 0 7px 2px #041e43;
+}
+.productItem{
+    display: flex;
+    padding: 14px;
+    border: 1px solid black;
+    border-radius: 12px;
+    box-shadow: 10px 3px 6px 3px #8c8c8c;
+    margin: 12px;
+}
+.productImage{
+    width: 250px;
+    height: 250px;
+    margin-right: 12px;
+}
+.formProduct{
+    display: flex;
+    border-radius: 12px;
+    margin: 12px;
+    border: 1px solid black;
+    border-radius: 12px;
+    padding: 25px;
+    align-items: center;
+}
+.inputProduct{
+    background-color: white;
+    width: 180px;
+}
+.filter{
+    display: flex;
+    align-items: center;
+}
+.filterSelect{
+    margin-right: 15px;
+    margin-left: 15px;
+}
+.category{
+    margin-left: 25px;
+}

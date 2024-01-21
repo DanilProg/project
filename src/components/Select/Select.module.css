@@ -1,0 +1,45 @@
+.container {
+  border: 1px solid black;
+  border-radius: 15px;
+  width: 250px;
+  height: 35px;
+  display: flex;
+}
+.selectInner {
+  padding: 6px 12px;
+}
+.caret {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  transition: 0.3s;
+}
+.caretActive {
+  transform: rotate(-180deg);
+}
+.optionsContainer {
+  position: fixed;
+  inset: 0 auto auto 0;
+}
+.options {
+  background-color: #ffffff;
+  padding: 8px 5px;
+  list-style: none;
+  border: 1px solid black;
+  border-top: none;
+  border-radius: 12px 12px 20px 20px;
+}
+.optionPosition {
+  transition: 0.5s;
+}
+.option {
+  margin-bottom: 6px;
+  padding: 4px;
+}
+
+.option:hover {
+  background-color: rgb(13, 110, 253);
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}

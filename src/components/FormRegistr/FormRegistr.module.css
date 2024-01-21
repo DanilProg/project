@@ -1,0 +1,12 @@
+.form{
+    width: 600px;
+    border: 1px solid black;
+    border-radius: 16px;
+}
+.formField{
+    width: 300px;
+    margin-bottom: 16px;
+}
+.formInner{
+    padding: 16px;
+}

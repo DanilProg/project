@@ -1,17 +1,9 @@
-import {
-  FormEvent,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FormEvent, useEffect, useMemo, useRef } from "react";
 import { Product } from "./Product.tsx";
 import classes from "./Product.module.css";
 import { Modal } from "../Modal/Modal.tsx";
 import { FormProduct } from "./FormProduct.tsx";
 import { IOption } from "../Select/Select.tsx";
-import classNames from "classnames";
 
 export interface IProduct {
   image: string;
@@ -31,7 +23,7 @@ interface ProductList {
   valueDesc: string;
   category: "asc" | "desc";
   pageSize: number;
-  setPageSize: (value: number) => void;
+  setPageSize: React.Dispatch<React.SetStateAction<number>>;
   page: number;
   setPage: (value: number) => void;
 }
@@ -58,7 +50,8 @@ const compare = (a: string, b: string) => (+a < +b ? 1 : -1);
 
 const sortProducts = (products: IProduct[], category: "asc" | "desc") => {
   if (!category) return products;
-  return products.sort((a, b) => {
+  const cloneProducts = [...products];
+  return cloneProducts.sort((a, b) => {
     return category === "desc"
       ? compare(a.price, b.price)
       : compare(b.price, a.price);
@@ -76,9 +69,8 @@ export const ProductList = ({
   pageSize,
   setPageSize,
   page,
-  setPage,
 }: ProductList) => {
-  const productItemRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
   const sortAndFilterProducts = useMemo(() => {
     const searchProduct = handleSearchProduct(products, search);
     const typeFilter = typeFilterProduct(
@@ -88,7 +80,23 @@ export const ProductList = ({
     const descTypeFilter = descFilterProduct(typeFilter, valueDesc);
     return sortProducts(descTypeFilter, category);
   }, [products, search, valueSelect?.value, valueDesc, category]);
-
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries, observer) => {
+        if (entries[0].isIntersecting) {
+          setPageSize((prevState) => prevState + 5);
+          /* observer.unobserve(entries[0].target);*/
+        }
+      },
+      { rootMargin: "100px 0px 0px 0px" },
+    );
+    if (scrollRef.current) {
+      obs.observe(scrollRef.current);
+    }
+    return () => {
+      obs.disconnect();
+    };
+  }, [setPageSize, sortAndFilterProducts]);
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (selectedValue?.id) {
@@ -115,21 +123,18 @@ export const ProductList = ({
       }
     }
   };
+  const data = sortAndFilterProducts.slice(page, (page + 1) * pageSize);
   return (
     <div className={classes.productList}>
       <div className={classes.productContent}>
-        {sortAndFilterProducts
-          .slice(page * pageSize, (page + 1) * pageSize)
-          .map((product, index) => (
-            <Product
-              key={product.title}
-              indexElement={index}
-              productItemRef={productItemRef}
-              value={product}
-              onEdit={() => setSelectedValue(product)}
-            />
-          ))}
-        <div className={classes.paginationContainer}>
+        {data.map((product) => (
+          <Product
+            key={product.title}
+            value={product}
+            onEdit={() => setSelectedValue(product)}
+          />
+        ))}
+        {/*        <div className={classes.paginationContainer}>
           {new Array(Math.ceil(sortAndFilterProducts.length / pageSize))
             .fill("")
             .map((btn, index) => (
@@ -144,8 +149,8 @@ export const ProductList = ({
                 {index + 1}
               </button>
             ))}
-        </div>
-        <div className={classes.paginationPageSize}>
+        </div>*/}
+        {/*<div className={classes.paginationPageSize}>
           <p>Колличество</p>
           {[5, 10, 15].map((btn) => (
             <button
@@ -159,7 +164,8 @@ export const ProductList = ({
               {btn}
             </button>
           ))}
-        </div>
+        </div>*/}
+
         {selectedValue && (
           <Modal
             onClose={() => setSelectedValue(null)}
@@ -173,6 +179,7 @@ export const ProductList = ({
           </Modal>
         )}
       </div>
+      <div className={classes.scrollBlock} ref={scrollRef}></div>
     </div>
   );
 };

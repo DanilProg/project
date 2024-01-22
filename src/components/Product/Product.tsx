@@ -3,24 +3,14 @@ import { Button } from "../Button/Button.tsx";
 
 import { Typography } from "../Typography/Typography.tsx";
 import { IProduct } from "./ProductList.tsx";
-import { LegacyRef } from "react";
+
 export interface IFormProduct {
   value: IProduct;
   onEdit: () => void;
-  productItemRef: LegacyRef<HTMLDivElement>;
-  indexElement: number;
 }
-export const Product = ({
-  value,
-  onEdit,
-  productItemRef,
-  indexElement,
-}: IFormProduct) => {
+export const Product = ({ value, onEdit }: IFormProduct) => {
   return (
-    <div
-      className={classes.productItem}
-      ref={indexElement === 4 ? productItemRef : null}
-    >
+    <div className={classes.productItem}>
       <div className={classes.productImage}>
         <img
           alt={"image product"}

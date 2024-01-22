@@ -5,12 +5,18 @@
 }
 .productContent{
     display: grid;
+
 }
 .title{
     font-weight: 400;
 }
 .text{
     margin-bottom: 12px;
+}
+.scrollBlock{
+    height: 1px;
+    width: 100%;
+    background-color: transparent;
 }
 .paginationContainer{
     display: flex;

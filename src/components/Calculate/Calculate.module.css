@@ -1,0 +1,8 @@
+.calculate{
+    width: 600px;
+}
+.calculateInner{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
